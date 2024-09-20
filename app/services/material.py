@@ -40,7 +40,7 @@ def search_videos_pexels(
     video_orientation = aspect.name
     video_width, video_height = aspect.to_resolution()
     api_key = get_api_key("pexels_api_keys")
-    headers = {"Authorization": api_key}
+    headers = {"Authorization": api_key, 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'}
     # Build URL
     params = {"query": search_term, "per_page": 20, "orientation": video_orientation}
     query_url = f"https://api.pexels.com/videos/search?{urlencode(params)}"
@@ -159,10 +159,13 @@ def save_video(video_url: str, save_dir: str = "") -> str:
         return video_path
 
     # if video does not exist, download it
+    api_key = get_api_key("pexels_api_keys")
+    headers = {"Authorization": api_key, 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'}
+
     with open(video_path, "wb") as f:
         f.write(
             requests.get(
-                video_url, proxies=config.proxy, verify=False, timeout=(60, 240)
+                video_url, proxies=config.proxy, verify=False, timeout=(60, 240), headers=headers
             ).content
         )
 
